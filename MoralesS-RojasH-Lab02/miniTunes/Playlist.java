@@ -11,6 +11,10 @@ public class Playlist {
     
     private List<String[]> songs;
 
+        public Playlist(){
+        this.songs = new ArrayList<>();
+    }
+    
     public Playlist(String[][] songs) {
         this.songs = new ArrayList<>();
         for (String[] song : songs) {
@@ -277,5 +281,50 @@ public class Playlist {
             return false;
         }
         return equals((Playlist)o);
+    }
+    
+    public Playlist union(Playlist b){
+        Playlist result = new Playlist();
+        for (String[] song : this.songs){
+            result = result.add(song);
+        }
+    
+        for (String[] songb : b.songs){
+            boolean flag = false;
+            for (String[] songr : result.songs){
+                if (songr[0].equals(songb[0]) && songr[1].equals(songb[1])){
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag){
+                result = result.add(songb);
+            }
+        }
+        return result;
+    }
+
+    public Playlist intersection(Playlist b){
+        Playlist result = new Playlist();
+        for (String[] songa : this.songs){
+            for (String[] songb : b.songs){
+                if (songa[0].equals(songb[0]) && songa[1].equals(songb[1])){
+                    result = result.add(songa);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    
+    public Playlist difference(Playlist b){
+        Playlist result = new Playlist();
+        for (String[] song : this.songs){
+            result = result.add(song);
+        }
+        for (String[] songb : b.songs){
+            result = result.delete(songb);
+        }
+        return result;
     }
 }

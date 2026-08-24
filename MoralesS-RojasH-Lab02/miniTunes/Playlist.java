@@ -7,6 +7,7 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 public class Playlist {
     
     private List<String[]> songs;
@@ -39,13 +40,24 @@ public class Playlist {
     }
     
     private String[] normalizar(String [] song){
-        
         String titleSong = song[0];
         String nameArtist = song[1];
-        String genre = song[2];
-        String duraction = song[3];
-        String rating = song[4];
-        
+    
+        String genre = null;
+        String duraction = null;
+        String rating = null;
+    
+        if (song.length > 2){
+            genre = song[2];
+        }
+    
+        if (song.length > 3){
+            duraction = song[3];
+        }
+    
+        if (song.length > 4){
+            rating = song[4];
+        }
         if (titleSong != null && !titleSong.isEmpty() && nameArtist != null && !nameArtist.isEmpty()){
             titleSong = titleSong.trim().replaceAll("\\s+", " "); //IA generativa
             titleSong = titleSong.toUpperCase();
@@ -115,7 +127,7 @@ public class Playlist {
          for (int i = 0; i < this.songs.size(); i++){
             if (this.songs.get(i)[0].equals(normalizedSong[0]) && this.songs.get(i)[1].equals(normalizedSong[1])){
                 index = i;
-                break;                     // ← aquí sí puedes cortar, solo buscabas la posición
+                break;    
             }
         }
         if (index == -1) {
@@ -129,11 +141,27 @@ public class Playlist {
     }
     
     public Playlist select(String [] values){
-        String titleSong = values[0];
-        String nameArtist = values[1];
-        String genre = values[2];
-        String duraction = values[3];
-        String rating = values[4];
+        String titleSong = null;
+        String nameArtist = null;
+        String genre = null;
+        String duraction = null;
+        String rating = null;
+        if (values.length > 0){
+            titleSong = values[0];
+        }
+        if (values.length > 1){
+            nameArtist = values[1];
+        }
+        if (values.length > 2){
+            genre = values[2];
+        }
+        if (values.length > 3){
+            duraction = values[3];
+        }
+        if (values.length > 4){
+            rating = values[4];
+        }
+        
         if (titleSong != null && !titleSong.isEmpty()){
             titleSong = titleSong.trim().replaceAll("\\s+", " ");
             titleSong = titleSong.toUpperCase();
@@ -215,12 +243,12 @@ public class Playlist {
         int maxCharsTitle = 4;
         int maxCharsArtist = 6;
         int maxCharsGenre = 5;
-        int maxCharsDuration = 11;
+        int maxCharsDuration = 8;   // ancho de alineacion de "DURATION" (sin el margen)
         int maxCharsRating = 9;
         for (String[] song: songs){
             int currentTitle = song[0].length();
             int currentArtist = song[1].length();
-            int currentGenre = song[2].length();
+            int currentGenre = song[2] == null ? 0 : song[2].length();
             if (currentTitle > maxCharsTitle){
                 maxCharsTitle = currentTitle;
             }
@@ -238,8 +266,8 @@ public class Playlist {
         result.append(String.format("%-" + maxCharsTitle + "s", "TITLE"));
         result.append(String.format("%-" + maxCharsArtist + "s", "ARTIST"));
         result.append(String.format("%-" + maxCharsGenre + "s", "GENRE"));
-        result.append(String.format("%-" + maxCharsDuration + "s", "DURATION"));
-        result.append(String.format("%-" + maxCharsRating + "s%n", "RATING"));
+        result.append(String.format("%-" + maxCharsDuration + "s   ", "DURATION"));
+        result.append(String.format("%-" + maxCharsRating + "s\n", "RATING"));
         
         for (String[] song : songs) {
             //IA generativa recomendo operador ternario: condición ? valorSiVerdadero : valorSiFalso
@@ -247,11 +275,11 @@ public class Playlist {
             String genre = song[2] == null ? "" : song[2]; 
             String duration = song[3] == null ? "" : song[3];
             String rating = song[4] == null ? "" : song[4];
-            result.append(String.format("%-" + maxCharsTitle + "s", song[1]));
-            result.append(String.format("%-" + maxCharsArtist + "s", song[2]));
-            result.append(String.format("%" + maxCharsGenre + "s", genre));
-            result.append(String.format("%+" + maxCharsDuration + "s", duration));
-            result.append(String.format("%-" + maxCharsRating + "s%n", rating));
+            result.append(String.format("%-" + maxCharsTitle + "s", song[0]));
+            result.append(String.format("%-" + maxCharsArtist + "s", song[1]));
+            result.append(String.format("%-" + maxCharsGenre + "s", genre));
+            result.append(String.format("%" + maxCharsDuration + "s   ", duration));
+            result.append(String.format("%-" + maxCharsRating + "s\n", rating));
         }
         return result.toString();
     }
@@ -326,5 +354,108 @@ public class Playlist {
             result = result.delete(songb);
         }
         return result;
+    }
+    
+    public Playlist sort(char value){
+        List<String[]> result = new ArrayList<>(this.songs);
+        // IA generativa: se utiliza nullsLast para manejar valores nulos y reverseOrder para ordenar de mayor a menor.
+        if (value == 't'){
+            result.sort(Comparator.comparing(fila -> fila[0]));
+        }
+        else if (value == 'a'){
+            result.sort(Comparator.comparing(fila -> fila[1]));
+        }
+        else if (value == 'g'){
+            result.sort(Comparator.comparing(fila -> fila[2], Comparator.nullsLast(String::compareTo)));
+        }
+        else if (value == 'd'){
+        result.sort(Comparator.comparing(fila -> fila[3], Comparator.nullsLast(Comparator.reverseOrder())));
+        }
+        else if (value == 'r'){result.sort(Comparator.comparing(fila -> fila[4], Comparator.nullsLast(Comparator.reverseOrder())));
+        }
+        return new Playlist(result);
+    }
+    
+    public int frequency(String value, char op){
+        int count = 0;
+        if (value != null && !value.isEmpty()){        
+            if (op == 't'){
+                value = value.trim().replaceAll("\\s+", " ");
+                value = value.toUpperCase();
+                for (String[] song : this.songs){
+                    if (song[0].equals(value)){
+                        count++;
+                    }
+                }
+            }
+            else if (op == 'a'){
+                value = value.trim().replaceAll("\\s+", " ");
+                value = value.toUpperCase();                
+                 for (String[] song : this.songs){
+                    if (song[1].equals(value)){
+                        count++;
+                    }
+                }
+            }
+            else if (op == 'g'){
+                value = value.trim().replaceAll("\\s+", " ");
+                value = value.toUpperCase();
+                 for (String[] song : this.songs){
+                    if (song[2] != null && song[2].equals(value)){
+                        count++;
+                    }
+                }
+            }
+            else if (op == 'd'){
+                value = value.replace(" ", "");
+                if (value.length() == 1 && value.charAt(0) >= '1' && value.charAt(0) <= '9') {
+                    for (String[] song : this.songs){
+                        if (song[3] != null && song[3].equals(value)){
+                            count++;
+                        }
+                    }
+                }
+                else{
+                    count = -1;
+                }
+            }
+            else if (op == 'r'){
+                value = value.replace(" ", "");
+                if (!(value.length()<1 || value.length() > 5)){
+                    for (int j = 0; j < value.length(); j++) {
+                        if (value.charAt(j) != '*') {
+                            value = null;
+                        }
+                    }
+                }
+                else {
+                    count = -1;
+                }
+                if (value != null){
+                    for (String[] song : this.songs){
+                        if (song[4] != null && song[4].equals(value)){
+                            count++;
+                        }
+                    }
+                }
+            }
+            else {
+                count = -1;
+            }
+        }
+        else{
+            count= -1;
+        }
+        return count;
+    }
+    
+    public int totalDuration(){
+        int total = 0;
+        for (String[] song : this.songs){
+            if (song[3] != null){
+                total += Integer.parseInt(song[3]); // Convertir  String a un int
+            }
+        }
+        return total;
     }
 }

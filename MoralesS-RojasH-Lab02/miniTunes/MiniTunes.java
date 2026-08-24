@@ -16,13 +16,16 @@ public class MiniTunes{
     }
 
     private String normalizar(String name){
-        if (name == null || name.isEmpty()){
+        if (name == null){
             return null;
         }
         else{
             String nameNormalized = name.trim().replaceAll("\\s+", " ");
-            nameNormalized = nameNormalized.toUpperCase();
-            return nameNormalized;
+            if (!nameNormalized.isEmpty()){
+                nameNormalized = nameNormalized.toUpperCase();
+                return nameNormalized;
+            }
+            return null;
         }
     }
         
@@ -97,7 +100,7 @@ public class MiniTunes{
         }
         else{
             ok = false;
-            return null;       
+            return "";       
         }
     }    
     
@@ -177,7 +180,49 @@ public class MiniTunes{
             ok = false;
         }
     }
-   
+       
+    public void sort(String name, char op){
+        String nameNormalized = normalizar(name);
+        char opNormalize = Character.toLowerCase(op);
+        if (nameNormalized != null && playlists.containsKey(nameNormalized)){
+            playlists.put(nameNormalized, playlists.get(nameNormalized).sort(op));
+            ok = true;
+        }
+        else {
+            ok = false;
+        }
+    }
+    
+    public int frequency(String name, String value, char op){
+        String nameNormalized = normalizar(name);
+        int count = 0;
+        char opNormalize = Character.toLowerCase(op);
+        if (nameNormalized != null && playlists.containsKey(nameNormalized)){
+            count = playlists.get(nameNormalized).frequency(value , opNormalize);
+            if (count == -1){
+                ok = false;
+            }
+            else {
+                ok = true;
+            }
+        }
+        else{
+            count = -1;
+            ok = false;
+        }
+        return count;
+    }
+    
+    public int totalDuration(String name){
+        String nameNormalized = normalizar(name);
+        if (nameNormalized != null && playlists.containsKey(nameNormalized)){
+            ok = true;
+            return playlists.get(nameNormalized).totalDuration();
+        }
+        ok = false;
+        return -1;
+    }
+    
     //If the last operation was successfully completed
     public boolean ok(){
         return ok;

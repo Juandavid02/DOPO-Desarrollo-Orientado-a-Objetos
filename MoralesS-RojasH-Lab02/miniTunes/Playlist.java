@@ -26,8 +26,8 @@ public class Playlist {
         }
     }
 
-    private Playlist(List<String[]> songsYaValidas) { //IA generativa lo hacemos para que no haya reprocesamiento
-        this.songs = songsYaValidas;
+    private Playlist(List<String[]> songsValidas) { //IA generativa: Se hace para que no haya reprocesamiento
+        this.songs = songsValidas;
     }
 
     private boolean check(String[] normalizedSong) {

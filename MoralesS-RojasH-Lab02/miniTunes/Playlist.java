@@ -8,14 +8,48 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+
+/**
+ * Clase que representa una lista de reproducción de canciones.
+ *
+ * Cada canción está compuesta por un título, un artista, un género,
+ * una duración y una calificación. El título y el artista son obligatorios,
+ * mientras que el género, la duración y la calificación pueden ser
+ * desconocidos.
+ *
+ * La combinación de título y artista debe ser única dentro de la lista
+ * de reproducción.
+ *
+ * Permite agregar, eliminar, seleccionar, ordenar y realizar operaciones
+ * de conjuntos entre listas de reproducción.
+ *
+ * @author MoralesS-RojasR
+ * @version 1.0
+ */
+
 public class Playlist {
     
     private List<String[]> songs;
-
-        public Playlist(){
+    
+    /**
+     * Crea una nueva lista de reproducción vacía.
+     *
+     * Inicializa una lista que almacenará la información de las canciones.
+     */
+    public Playlist(){
         this.songs = new ArrayList<>();
     }
     
+    /**
+     * Crea una nueva lista de reproducción a partir de un arreglo de canciones.
+     *
+     * Cada canción es normalizada antes de ser agregada. Las canciones con
+     * información inválida o que tengan la misma combinación de título y
+     * artista que una canción existente no son agregadas.
+     *
+     * @param songs el arreglo bidimensional que contiene las canciones
+     * que se desean agregar a la lista de reproducción
+     */
     public Playlist(String[][] songs) {
         this.songs = new ArrayList<>();
         for (String[] song : songs) {
@@ -25,11 +59,33 @@ public class Playlist {
             }
         }
     }
-
+    
+    
+    /**
+     * Crea una nueva lista de reproducción utilizando directamente una lista
+     * de canciones previamente procesadas.
+     *
+     * Este constructor se utiliza internamente para crear nuevas listas como
+     * resultado de operaciones, evitando normalizar nuevamente las canciones.
+     *
+     * @param songsValidas la lista de canciones que formará parte de la nueva
+     * lista de reproducción y se nombran asi porque ya pasaron por el proceso de 
+     * normalizacion
+     */
     private Playlist(List<String[]> songsValidas) { //IA generativa: Se hace para que no haya reprocesamiento
         this.songs = songsValidas;
     }
 
+    /**
+     * Comprueba si una canción ya existe en la lista de reproducción.
+     *
+     * Dos canciones se consideran iguales si tienen el mismo título y el
+     * mismo artista.
+     *
+     * @param normalizedSong la canción normalizada que se desea verificar
+     * @return true si ya existe una canción con el mismo título y
+     * artista; false} en caso contrario
+     */
     private boolean check(String[] normalizedSong) {
         for (String[] song : this.songs) {
             if (song[0].equals(normalizedSong[0]) && song[1].equals(normalizedSong[1])) {
@@ -39,6 +95,26 @@ public class Playlist {
         return false;
     }
     
+    
+    /**
+     * Normaliza y valida la información de una canción.
+     *
+     * El título y el artista son obligatorios. Ambos valores se eliminan de
+     * espacios innecesarios y se convierten a mayúsculas.
+     *
+     * El género es opcional y si existe, se normaliza eliminando espacios
+     * innecesarios y convirtiéndolo a mayúsculas.
+     *
+     * La duración es opcional, pero si se proporciona debe ser un número
+     * entre 1 y 9.
+     *
+     * La calificación es opcional, pero si se proporciona debe contener
+     * únicamente caracteres '*' y tener entre uno y cinco caracteres.
+     *
+     * @param song el arreglo que contiene la información de la canción
+     * @return un nuevo arreglo con la información normalizada o
+     * null si la canción contiene información inválida
+     */
     private String[] normalizar(String [] song){
         String titleSong = song[0];
         String nameArtist = song[1];
@@ -108,6 +184,20 @@ public class Playlist {
         return new String[]{titleSong, nameArtist, genre, duraction, rating};
     }
     
+    /**
+     * Agrega una canción a la lista de reproducción.
+     *
+     * La canción es normalizada antes de ser agregada. La operación solo
+     * se realiza si la información es válida y no existe otra canción con
+     * la misma combinación de título y artista.
+     *
+     * La lista original no es modificada; se retorna una nueva lista con
+     * la canción agregada.
+     *
+     * @param song la información de la canción que se desea agregar
+     * @return una nueva lista de reproducción con la canción agregada o la
+     * misma lista si la canción no es válida o ya existe
+     */
     public Playlist add(String [] song){
         String[] normalizedSong = normalizar(song);
         if (normalizedSong == null || check(normalizedSong)) {
@@ -118,6 +208,20 @@ public class Playlist {
         return new Playlist(nueva);   
     }
     
+    /**
+     * Elimina una canción de la lista de reproducción.
+     *
+     * La canción se identifica mediante la combinación de su título y artista.
+     * La lista original no es modificada ya que se retorna una nueva lista sin la
+     * canción indicada.
+     *
+     * Si la canción no es válida o no existe en la lista, se retorna la
+     * lista actual sin modificaciones.
+     *
+     * @param song la información de la canción que se desea eliminar
+     * @return una nueva lista sin la canción indicada o la misma lista si
+     * la canción no es válida o no existe
+     */
     public Playlist delete(String [] song){
         String[] normalizedSong = normalizar(song);
         if (normalizedSong == null) {
@@ -140,6 +244,20 @@ public class Playlist {
         return new Playlist(nueva);
     }
     
+     /**
+     * Selecciona las canciones que cumplen con los criterios especificados.
+     *
+     * Los valores proporcionados corresponden, en orden, a título, artista,
+     * género, duración y calificación. Los valores nulos o vacíos no se
+     * utilizan como criterio de búsqueda.
+     *
+     * Las canciones seleccionadas deben cumplir con todos los criterios
+     * válidos proporcionados.
+     *
+     * @param values los valores que definen los criterios de búsqueda
+     * @return una nueva lista de reproducción que contiene las canciones
+     * que cumplen con los criterios indicados
+     */
     public Playlist select(String [] values){
         String titleSong = null;
         String nameArtist = null;
@@ -226,11 +344,28 @@ public class Playlist {
         return new Playlist(selectedList);
     }
     
+    /**
+     * Obtiene el número de canciones almacenadas en la lista de reproducción.
+     *
+     * @return la cantidad de canciones de la lista
+     */
     public int size(){
         return this.songs.size();
     }    
     
-   
+    /**
+     * Obtiene una representación textual de las canciones de la lista.
+     *
+     * La representación incluye las columnas TITLE, ARTIST, GENRE,
+     * DURATION y RATING. Las columnas se ajustan según la longitud de
+     * la información almacenada y se les suman 3 espacios para mantener
+     * los datos alineados.
+     *
+     * Los valores desconocidos se representan como espacios vacíos.
+     *
+     * @return una cadena que contiene la información de todas las canciones
+     * de la lista en formato de tabla
+     */
     // Songs are in uppercase with unnecessary spaces removed.
     // Columns are aligned and separated by three spaces.
     //TITLE    ARTIST          GENRE   DURATION   RATING
@@ -284,6 +419,17 @@ public class Playlist {
         return result.toString();
     }
     
+    /**
+     * Compara esta lista de reproducción con otra lista.
+     *
+     * Dos listas se consideran iguales si contienen la misma cantidad de
+     * canciones y cada canción se encuentra en la misma posición con la
+     * misma información.
+     *
+     * @param pl la lista de reproducción con la que se desea comparar
+     * @return true si ambas listas contienen las mismas canciones
+     * en el mismo orden; false en caso contrario
+     */
     public boolean equals(Playlist pl){
         if (this.songs.size() != pl.songs.size()){
             return false;
@@ -300,6 +446,17 @@ public class Playlist {
         return true;
     }
     
+    /**
+     * Compara este objeto con otro objeto para determinar si representan
+     * la misma lista de reproducción.
+     *
+     * El objeto debe ser una instancia de Playlist para poder
+     * realizar la comparación.
+     *
+     * @param o el objeto con el que se desea comparar esta lista
+     * @return true si el objeto representa una lista equivalente;
+     * false en caso contrario
+     */
     public boolean equals(Object o){
         if (this == o){
             return true;
@@ -310,7 +467,20 @@ public class Playlist {
         }
         return equals((Playlist)o);
     }
-    
+
+    /**
+     * Calcula la unión entre dos listas de reproducción.
+     *
+     * La lista resultante contiene primero las canciones de la primera lista y
+     * posteriormente las canciones de la segunda lista que no estén
+     * presentes en la anterior.
+     *
+     * La combinación de título y artista se utiliza para determinar si
+     * una canción ya existe.
+     *
+     * @param b la lista de reproducción con la que se realizará la unión
+     * @return una nueva lista que contiene la unión de ambas listas
+     */
     public Playlist union(Playlist b){
         Playlist result = new Playlist();
         for (String[] song : this.songs){
@@ -331,7 +501,19 @@ public class Playlist {
         }
         return result;
     }
-
+    
+    /**
+     * Calcula la intersección entre dos listas de reproducción.
+     *
+     * La lista resultante contiene únicamente las canciones que aparecen
+     * en ambas listas. La comparación se realiza utilizando el título y
+     * el artista de cada canción.
+     *
+     * @param b la lista de reproducción con la que se realizará la
+     * intersección
+     * @return una nueva lista que contiene las canciones comunes entre
+     * ambas listas
+     */
     public Playlist intersection(Playlist b){
         Playlist result = new Playlist();
         for (String[] songa : this.songs){
@@ -345,6 +527,16 @@ public class Playlist {
         return result;
     }
     
+    /**
+     * Calcula la diferencia entre esta dos listas de reproducción.
+     *
+     * La lista resultante contiene las canciones de esta lista que no
+     * aparecen en la lista proporcionada como parámetro.
+     *
+     * @param b la lista de reproducción cuyas canciones serán eliminadas
+     * de esta lista
+     * @return una nueva lista que contiene la diferencia entre ambas listas
+     */
     public Playlist difference(Playlist b){
         Playlist result = new Playlist();
         for (String[] song : this.songs){
@@ -356,6 +548,19 @@ public class Playlist {
         return result;
     }
     
+    /**
+     * Ordena las canciones de la lista según el criterio indicado.
+     *
+     * Los criterios disponibles son: 't' (ordena por título), 'a' 
+     * (ordena por artista) 'g' (ordena por género.), 'd' 
+     * (ordena por duración de mayor a menor) 'r' (ordena por calificación de mayor a menor).
+     * 
+     * Los valores nulos de género, duración y calificación se ubican al
+     * final cuando se utilizan esos criterios.
+     *
+     * @param value el carácter que representa el criterio de ordenamiento
+     * @return una nueva lista de reproducción con las canciones ordenadas
+     */
     public Playlist sort(char value){
         List<String[]> result = new ArrayList<>(this.songs);
         // IA generativa: se utiliza nullsLast para manejar valores nulos y reverseOrder para ordenar de mayor a menor.
@@ -376,6 +581,23 @@ public class Playlist {
         return new Playlist(result);
     }
     
+     /**
+     * Calcula la frecuencia de un valor dentro de un atributo específico
+     * de las canciones.
+     *
+     * Los operadores disponibles son: 't' (busca por título) 'a' 
+     * busca por artista 'g' (busca por género) 'd' (busca por duración)
+     * 'r' (busca por calificación)
+     * 
+     * El valor es normalizado antes de realizar la búsqueda según el
+     * atributo seleccionado.
+     *
+     * @param value el valor cuya frecuencia se desea calcular
+     * @param op el carácter que indica el atributo en el que se realizará
+     * la búsqueda
+     * @return el número de canciones que contienen el valor indicado o
+     * -1 si el valor o el operador no son válidos
+     */
     public int frequency(String value, char op){
         int count = 0;
         if (value != null && !value.isEmpty()){        
@@ -449,6 +671,15 @@ public class Playlist {
         return count;
     }
     
+    /**
+     * Calcula la duración total de todas las canciones de la lista.
+     *
+     * Las canciones cuya duración es desconocida no se incluyen en el
+     * cálculo.
+     *
+     * @return la suma de las duraciones conocidas de todas las canciones
+     * de la lista
+     */
     public int totalDuration(){
         int total = 0;
         for (String[] song : this.songs){

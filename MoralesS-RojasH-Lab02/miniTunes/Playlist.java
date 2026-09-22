@@ -60,7 +60,6 @@ public class Playlist {
         }
     }
     
-    
     /**
      * Crea una nueva lista de reproducción utilizando directamente una lista
      * de canciones previamente procesadas.
@@ -688,5 +687,14 @@ public class Playlist {
             }
         }
         return total;
+    }
+    
+    public String findSong(String nameSong){
+        for (String[] song : this.songs){
+            if (nameSong.equals(song[1])){
+                return song[1];
+            }
+        }
+        return null;
     }
 }

@@ -5,12 +5,14 @@ public class EcoSafari{
  
     private static final int SIZE=25;
     private Entity[][] cells;
+    private boolean[][] affected;
     
     /**
      * Constructs a new EcoSafari
      */
     public EcoSafari() {
         cells=new Entity[SIZE][SIZE];
+        affected = new boolean[SIZE][SIZE];
         someEntities();
     }
 
@@ -20,7 +22,10 @@ public class EcoSafari{
     public void someEntities(){
         Elephant dumbo = new Elephant(this, 3, 5);
         Elephant babar = new Elephant(this, 10, 10);
- 
+        Bush mopane = new Bush(this, 2, 2);
+        Bush acacia = new Bush(this, 12, 6);
+        Storm thor = new Storm(this, 3, 4);
+        Storm tempest = new Storm(this, 7, 8);
     }
     
     /**
@@ -80,7 +85,6 @@ public class EcoSafari{
        return position;
     }
     
- 
     /**
      * Advances the simulation by one time step
      */
@@ -105,4 +109,21 @@ public class EcoSafari{
         }
     }
 
+    public void setAffected(int r, int c){
+        int filaNormalizada = ((r % SIZE) + SIZE) % SIZE;
+        int columnaNormalizada = ((c % SIZE) + SIZE) % SIZE;
+        affected[filaNormalizada][columnaNormalizada] = true;
+    }
+    
+    public boolean isAffected(int r, int c){
+        int filaNormalizada = ((r % SIZE) + SIZE) % SIZE;
+        int columnaNormalizada = ((c % SIZE) + SIZE) % SIZE;
+        return affected[filaNormalizada][columnaNormalizada];
+    }
+    
+    public void unsetAffected(int r, int c){
+        int filaNormalizada = ((r % SIZE) + SIZE) % SIZE;
+        int columnaNormalizada = ((c % SIZE) + SIZE) % SIZE;
+        affected[filaNormalizada][columnaNormalizada] = false;
+    }
 }

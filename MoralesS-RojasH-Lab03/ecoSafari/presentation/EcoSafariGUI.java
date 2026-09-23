@@ -64,7 +64,8 @@ public class EcoSafariGUI extends JFrame{
             setPreferredSize(new Dimension(gui.SIDE*gui.SIZE+10, gui.SIDE*gui.SIZE+10));         
         }
     
-    
+        //Ayuda de IA generativa para suavizar el gris
+        
         public void paintComponent(Graphics g){
             EcoSafari theEcoSafari=gui.gettheEcoSafari();
             super.paintComponent(g);
@@ -78,7 +79,11 @@ public class EcoSafariGUI extends JFrame{
             for (int f=0;f<theEcoSafari.getSize();f++){
                 for(int c=0;c<theEcoSafari.getSize();c++){
                     if (theEcoSafari.get(f,c)!=null){
-                        g.setColor(theEcoSafari.get(f,c).getColor());
+                        Color entityColor = theEcoSafari.get(f,c).getColor();
+                        if (theEcoSafari.isAffected(f,c)){
+                            entityColor = entityColor.darker();
+                        }
+                        g.setColor(entityColor);
                         if (theEcoSafari.get(f,c).shape()==Entity.SQUARE){                  
                             g.fillRoundRect(gui.SIDE*c+1,gui.SIDE*f+1,gui.SIDE-2,gui.SIDE-2,2,2);   
                         }else {
@@ -92,6 +97,9 @@ public class EcoSafariGUI extends JFrame{
                                 g.drawString("~",gui.SIDE*c+6,gui.SIDE*f+17);
                             }
                         }    
+                    } else if (theEcoSafari.isAffected(f,c)){
+                        g.setColor(Color.GRAY);
+                        g.fillRect(gui.SIDE*c+1,gui.SIDE*f+1,gui.SIDE-2,gui.SIDE-2);
                     }
                 }
             }

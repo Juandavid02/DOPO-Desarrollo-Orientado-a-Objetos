@@ -20,7 +20,23 @@ public class EcoSafari{
         affected = new boolean[SIZE][SIZE];
         someEntities();
     }
-
+    
+    /**
+     * Crea un safari nuevo. Si zone es true pone la zona de cebras y leones,
+     * si no pone las entidades de siempre.
+     *
+     * @param zone true para la zona, false para las entidades de siempre
+     */
+    public EcoSafari(boolean zone) {
+        cells=new Entity[SIZE][SIZE];
+        affected = new boolean[SIZE][SIZE];
+        if (zone){
+            someZone();
+        } else {
+            someEntities();
+        }
+    }
+    
     /**
      * Llena el safari con algunas entidades de ejemplo
      * (elefantes, arbustos, tormentas y elefantes enfermos).
@@ -39,6 +55,14 @@ public class EcoSafari{
         SaltLick cesarS = new SaltLick(this, 12, 11);
         SaltLick juanS = new SaltLick(this, 14, 13);
     }
+    
+    /**
+     * Llena la sabana de leonas, tierra, cebras
+     */
+    public void someZone(){
+        
+    }
+    
     
     /**
      * Devuelve el tamaño del safari (filas y columnas).

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class Animal extends Organism implements Entity{
     
     private EcoSafari habitat;
-    
+    private boolean acted;
     /**
      * Crea un animal y lo pone en el safari.
      *
@@ -21,6 +21,7 @@ public abstract class Animal extends Organism implements Entity{
     public Animal(EcoSafari habitat, int row, int col){
         this.habitat = habitat;
         habitat.set((Entity)this, row, col);
+        acted = false;
     }
     
     /**
@@ -227,4 +228,53 @@ public abstract class Animal extends Organism implements Entity{
      */
     public abstract void createOffspring(int row, int col);
     
+    /**
+     * Turno del animal: se mueve, come, muere si se quedó sin energía
+     * y se reproduce. Solo actúa una vez por turno.
+     */
+    @Override
+    public void tic(){
+        if (acted){
+            return;
+        }
+        acted = true;
+        
+        for (int i = 0; i < speed(); i++){
+            int[] position = habitat.find(this);
+            int[] land = null;
+            if (position != null){
+                land = findLand(position[0], position[1]);
+            }
+            if (land == null){
+                break;
+            }
+            moveTo(land[0], land[1]);
+            loseEnergy();
+        }
+        
+        int[] position = habitat.find(this);
+        if (position != null){
+            int[] food = findFood(position[0], position[1]);
+            if (food != null){
+                eat(food[0], food[1]);
+            }
+        }
+        
+        if (!isAlive()){
+            disappear();
+            return;
+        }
+        
+        if (position != null){
+            reproduce(position[0], position[1]);
+        }
+    }
+    
+    /**
+     * Deja al animal listo para actuar en el siguiente turno.
+     */
+    @Override
+    public void tac(){
+        acted = false;
+    }
 }

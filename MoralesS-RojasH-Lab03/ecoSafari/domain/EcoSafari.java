@@ -32,10 +32,15 @@ public class EcoSafari{
         Bush acacia = new Bush(this, 12, 6);
         Storm thor = new Storm(this, 3, 4);
         Storm tempest = new Storm(this, 7, 8);
+<<<<<<< Updated upstream
         SickElephant cesar = new SickElephant(this, 9, 10);
         SickElephant juan = new SickElephant(this, 12, 3);
         SickElephant rayo = new SickElephant(this, 15, 24);
         SickElephant casco = new SickElephant(this, 6, 4);
+=======
+        SaltLick cesar = new SaltLick(this, 12, 11);
+        SaltLick Juan = new SaltLick(this, 14, 13);
+>>>>>>> Stashed changes
     }
     
     /**

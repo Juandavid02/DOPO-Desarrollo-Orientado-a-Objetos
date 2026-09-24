@@ -9,6 +9,7 @@ import domain.EcoSafari;
 import domain.Elephant;
 import domain.Bush;
 import domain.Storm;
+import domain.SickElephant;
 
 public class EcoSafariTest
 {
@@ -90,9 +91,35 @@ public class EcoSafariTest
         Storm tormenta = new Storm(safari, 1, 1);
         assertEquals(Color.BLACK, tormenta.getColor());
     }
+
+    //Pruebas del Elefante Enfermo 
+    @Test 
+    public void shouldMoveSlowly(){
+        SickElephant rayo = new SickElephant(safari, 2, 3);
+        safari.ticTac();
+        safari.ticTac();
+        assertTrue(safari.get(3, 4) instanceof SickElephant);
+    }    
+
+    @Test
+    public void shouldLoseHealthFaster(){
+        SickElephant rayo = new SickElephant(safari, 2, 3);
+        Elephant dumbo = new Elephant(safari, 5, 5);
+        safari.ticTac();
+        assertEquals(80, rayo.getEnergy());
+        assertTrue(rayo.getEnergy() < dumbo.getEnergy()); 
+    }
     
     @Test
-    public void shouldWrapAroundAtEdge(){}
+    public void shouldMaintainTheEnergyAndTheEnergySourcesAreIndependent(){
+        SickElephant rayo = new SickElephant(safari, 15, 24);
+        SickElephant casco = new SickElephant(safari, 3, 4);
+        safari.ticTac();
+        assertEquals(100, rayo.getEnergy());
+        assertTrue(safari.get(15, 24) instanceof SickElephant);
+        safari.ticTac();
+        assertEquals(70, casco.getEnergy());
+    }
     /**
      * Tears down the test fixture.
      *

@@ -1,28 +1,40 @@
 package domain;
-import java.util.ArrayList;
 
 
 /**
- * Write a description of class Animal here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Animal de la zona depredador-presa (cebra o león). Tiene energía,
+ * puede comer, moverse sobre tierra y reproducirse.
+ *
+ * @author MoralesS-RojasH
  */
 public abstract class Animal extends Organism implements Entity{
-    
-    private EcoSafari habitat;
+
     /**
-     * Constructor for objects of class Animal
+     * Crea un animal y lo pone en el safari.
+     *
+     * @param habitat el safari donde vive
+     * @param row la fila donde nace
+     * @param col la columna donde nace
      */
     public Animal(EcoSafari habitat, int row, int col){
         this.habitat = habitat;
         habitat.set((Entity)this, row, col);
     }
     
+    /**
+     * Devuelve el safari donde está el animal.
+     *
+     * @return el safari del animal
+     */
     public EcoSafari getHabitat(){
         return this.habitat;
     }
     
+    /**
+     * Dice si el animal sigue vivo.
+     *
+     * @return true si tiene energía, false si se quedó sin ella
+     */
     public boolean isAlive(){
         if (this.getEnergy()<=0){
             return false;
@@ -50,17 +62,16 @@ public abstract class Animal extends Organism implements Entity{
         return vecinos;
     }
     
-    public int[] findFood(int row, int col){
-        ArrayList<int[]> vecinos = neighborsNearby(row, col);
-        for (int[] v : vecinos){
-            Entity e = habitat.get(v[0], v[1]);
-            if (e != null && isFood(e)){
-                return v;
-            }
-        }
-        return null;
+    /**
+     * Busca una comida en las casillas vecinas.
+     *
+     * @param row la fila desde donde se mira
+     * @param col la columna desde donde se mira
+     * @return la posición {fila, columna} de la primera comida, o null si no hay
+     */
+    public Animal()
+    {
+
     }
-    
-    public abstract boolean isFood(Entity e);
-    
+
 }

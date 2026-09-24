@@ -2,17 +2,21 @@ package domain;
 
 
 /**
- * Write a description of class SickElephant here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * Elefante enfermo del safari. Se mueve en diagonal solo un turno de cada dos
+ * y pierde más energía que un elefante normal.
+ *
+ * @author MoralesS-RojasH
  */
 public class SickElephant extends Elephant
 {
     private int countTicTac;
     private boolean hasActed;
     /**
-     * Constructor for objects of class SickElephant
+     * Crea un elefante enfermo y lo pone en el hábitat.
+     *
+     * @param habitat el safari donde vive el elefante
+     * @param row fila donde queda
+     * @param column columna donde queda
      */
     public SickElephant(EcoSafari habitat,int row, int column)
     {
@@ -21,6 +25,11 @@ public class SickElephant extends Elephant
         hasActed=false;
     }
     
+    /**
+     * Turno del elefante enfermo. Si todavía no ha actuado, alterna entre dos casos:
+     * en un turno intenta moverse en diagonal y pierde 20 de energía; en el siguiente
+     * se queda quieto y pierde 10. Si se queda sin energía, desaparece.
+     */
     @Override
     public void tic() {
         if (!hasActed){
@@ -44,6 +53,9 @@ public class SickElephant extends Elephant
         }
     }
     
+    /**
+     * Deja al elefante enfermo listo para actuar en el siguiente turno.
+     */
     @Override
     public void tac(){
         hasActed=false;

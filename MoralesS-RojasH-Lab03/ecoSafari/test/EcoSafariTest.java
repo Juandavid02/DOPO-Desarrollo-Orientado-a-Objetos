@@ -9,13 +9,9 @@ import domain.EcoSafari;
 import domain.Elephant;
 import domain.Bush;
 import domain.Storm;
-<<<<<<< Updated upstream
 import domain.SickElephant;
-=======
 import domain.Entity;
 import domain.SaltLick;
-
->>>>>>> Stashed changes
 
 public class EcoSafariTest
 {
@@ -117,7 +113,6 @@ public class EcoSafariTest
     }
     
     @Test
-<<<<<<< Updated upstream
     public void shouldMaintainTheEnergyAndTheEnergySourcesAreIndependent(){
         SickElephant rayo = new SickElephant(safari, 15, 24);
         SickElephant casco = new SickElephant(safari, 6, 4);
@@ -127,8 +122,6 @@ public class EcoSafariTest
         safari.ticTac();
         assertEquals(70, casco.getEnergy());
     }
-=======
-    public void shouldWrapAroundAtEdge(){}
     
     /**
      * Prueba que el salitral restaure la energía de un elefante vecino en su vecindad de Moore.
@@ -216,7 +209,6 @@ public class EcoSafariTest
         assertEquals(Color.LIGHT_GRAY, control.getColor());
     }
 
->>>>>>> Stashed changes
     /**
      * Tears down the test fixture.
      *

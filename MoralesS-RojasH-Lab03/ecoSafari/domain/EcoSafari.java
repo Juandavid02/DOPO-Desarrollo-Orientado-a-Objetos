@@ -1,5 +1,5 @@
 package domain;
-
+import java.util.Random;
 /**
  * Safari de 25x25 casillas donde viven las entidades (elefantes, arbustos y tormentas).
  * Guarda dónde está cada una y qué casillas están afectadas por una tormenta.
@@ -9,6 +9,7 @@ package domain;
 public class EcoSafari{
  
     private static final int SIZE=25;
+    private Random random = new Random();
     private Entity[][] cells;
     private boolean[][] affected;
     
@@ -57,7 +58,24 @@ public class EcoSafari{
     }
     
     /**
-     * Llena la sabana de leonas, tierra, cebras
+     * Devuelve el generador de números aleatorios utilizado por las entidades.
+     * @return El generador de números aleatorios.
+     */
+
+    public Random getRandom(){
+        return random;
+    }
+    
+    /**
+     * Cambia el generador de números aleatorios (útil para hacer que las pruebas sean predecibles)
+     * @param random el nuevo generador
+     */
+    public void setRandom(Random random){
+        this.random = random;
+    }
+    
+    /**
+     * Llena la sabana de leonas, tierra, cebras y pasto
      */
     public void someZone(){
         

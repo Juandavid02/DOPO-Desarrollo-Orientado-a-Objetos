@@ -12,9 +12,19 @@ import domain.Storm;
 import domain.SickElephant;
 import domain.Entity;
 import domain.SaltLick;
+import domain.Grass;
+import domain.Soil;
+import java.util.Random;
 
 public class EcoSafariTest
 {
+    /** Generador aleatorio con una respuesta fija, de modo que las pruebas del suelo siempre den el mismo resultado */
+    private static class FixedRandom extends Random
+    {
+        private final double value;
+        FixedRandom(double value){ this.value = value; }
+        @Override public double nextDouble(){ return value; }
+    }
     private EcoSafari safari;
 
     @BeforeEach
@@ -123,8 +133,9 @@ public class EcoSafariTest
         assertEquals(70, casco.getEnergy());
     }
     
+    // Pruebas del SaltLick
     /**
-     * Prueba que el salitral restaure la energía de un elefante vecino en su vecindad de Moore.
+     * Prueba que el SaltLick restaure la energía de un elefante vecino en su vecindad.
      */
     @Test
     public void shouldRestoreEnergyOfNeighborElephant()
@@ -137,7 +148,7 @@ public class EcoSafariTest
     }
     
     /**
-     * Prueba que el salitral no afecte a un elefante que se encuentra fuera de su vecindad de Moore.
+     * Prueba que el SaltLick no afecte a un elefante que se encuentra fuera de su vecindad.
      */
     @Test
     public void shouldNotAffectElephantThatIsNotNeighbor()
@@ -150,7 +161,7 @@ public class EcoSafariTest
     }
  
     /**
-     * Prueba que la restauración de energía del salitral no supere el límite máximo de energía del organismo (100).
+     * Prueba que la restauración de energía del SaltLick no supere el límite máximo de energía del organismo (100).
      */
     @Test
     public void shouldNotExceedMaximumEnergy()
@@ -163,7 +174,7 @@ public class EcoSafariTest
     }
  
     /**
-     * Prueba que el salitral permanezca estático en su posición original tras varios ciclos de simulación.
+     * Prueba que el SaltLick permanezca estático en su posición original tras varios ciclos de simulación.
      */
     @Test
     public void shouldStayInPlace()
@@ -176,7 +187,7 @@ public class EcoSafariTest
     }
  
     /**
-     * Prueba que el salitral devuelva el color rosa, la forma cuadrada y valide que no es un organismo vivo.
+     * Prueba que el SaltLick devuelva el color rosa, la forma cuadrada y valide que no es un organismo vivo.
      */
     @Test
     public void shouldBePinkSquareAndNotOrganism()
@@ -188,9 +199,9 @@ public class EcoSafariTest
     }
  
     /**
-     * Prueba significativa (de aceptación): un par de salitrales, cesar y Juan,
+     * Prueba significativa (de aceptación): un par de SaltLicks, cesar y Juan,
      * colocados a lo largo del camino diagonal de un elefante lo mantienen con la energía al máximo
-     * durante cuatro tic-tacs, mientras que un elefante idéntico sin salitrales (control)
+     * durante cuatro tic-tacs, mientras que un elefante idéntico sin SaltLicks (control)
      * pierde 10 puntos de energía por paso.
      */
     @Test
@@ -208,7 +219,60 @@ public class EcoSafariTest
         assertEquals(60, control.getEnergy());
         assertEquals(Color.LIGHT_GRAY, control.getColor());
     }
+    
+    //pruebas de la tierra y el pasto
+    /**
+     * Pruebaque la tierra genere pasto cuando la probabilidad aleatoria es menor o igual
+     * al límite permitido (en este caso, 0.05 es menor que el 10%).
+     */
+    @Test
+    public void shouldGrowGrassWhenProbabilityAllows()
+    {
+        safari.setRandom(new FixedRandom(0.05));
+        Soil soil = new Soil(safari, 20, 15);
+        soil.tic();
+        assertTrue(safari.get(20, 15) instanceof Grass);
+    }
+ 
+    /**
+     * Prueba que la tierra no genere pasto cuando la probabilidad aleatoria supera el límite
+     * establecido (en este caso, 0.5 es mayor que el 10%).
+     */
+    @Test
+    public void shouldNotGrowGrassWhenProbabilityDoesNotAllow()
+    {
+        safari.setRandom(new FixedRandom(0.5));
+        Soil soil = new Soil(safari, 20, 15);
+        soil.tic();
+        assertSame(soil, safari.get(20, 15));
+    }
+ 
+    /**
+     * Prueba que al desaparecer el pasto (por ejemplo, al ser comida), la celda sea
+     * reemplazada correctamente por una instancia de suelo.
+     */
+    @Test
+    public void shouldLeaveSoilWhenGrassDisappears()
+    {
+        Grass grass = new Grass(safari, 20, 15);
+        assertTrue(grass.disappear());
+        assertTrue(safari.get(20, 15) instanceof Soil);
+    }
+ 
+    /**
+     * Prueba de integración que verifica que el crecimiento de el pasto ocurra de forma normal
+     * durante la ejecución de un ciclo completo de la simulación (ticTac).
+     */
+    @Test
+    public void shouldGrowGrassDuringTicTac()
+    {
+        safari.setRandom(new FixedRandom(0.05));
+        Soil soil = new Soil(safari, 20, 15);
+        safari.ticTac();
+        assertTrue(safari.get(20, 15) instanceof Grass);
+    }
 
+    
     /**
      * Tears down the test fixture.
      *

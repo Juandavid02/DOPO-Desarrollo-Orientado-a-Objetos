@@ -92,7 +92,7 @@ public abstract class Animal extends Organism implements Entity{
     public int[] findLand(int row, int col){
         ArrayList<int[]> vecinos = neighborsNearby(row, col);
         for (int[] v : vecinos){
-            if (habitat.get(v[0], v[1]) instanceof Tierra){
+            if (habitat.get(v[0], v[1]) instanceof Soil){
                 return v;
             }
         }
@@ -119,7 +119,7 @@ public abstract class Animal extends Organism implements Entity{
      * @param col la columna de la comida
      */
     public void eat(int row, int col){
-        new Tierra(habitat, row, col);
+        new Soil(habitat, row, col);
         changeEnergy(energyGain());
     }
     
@@ -135,7 +135,7 @@ public abstract class Animal extends Organism implements Entity{
         int[] position = habitat.find(this);
         Entity target = habitat.get(row, col);
         boolean ok = false;
-        if (position != null && target instanceof Tierra){
+        if (position != null && target instanceof Soil){
             habitat.set(target, position[0], position[1]);
             habitat.set(this, row, col);
             ok = true;
@@ -152,7 +152,7 @@ public abstract class Animal extends Organism implements Entity{
         int[] position = habitat.find(this);
         boolean ok = false;
         if (position != null){
-            new Tierra(habitat, position[0], position[1]);
+            new Soil(habitat, position[0], position[1]);
             ok = true;
         }
         return ok;
@@ -171,7 +171,7 @@ public abstract class Animal extends Organism implements Entity{
         ArrayList<int[]> vecinos = neighborsNearby(row, col);
         for (int i = 0; i < vecinos.size() && !born; i++){
             int[] v = vecinos.get(i);
-            if (habitat.get(v[0], v[1]) instanceof Tierra && hasMateNear(v[0], v[1])){
+            if (habitat.get(v[0], v[1]) instanceof Soil && hasMateNear(v[0], v[1])){
                 createOffspring(v[0], v[1]);
                 born = true;
             }
@@ -192,7 +192,7 @@ public abstract class Animal extends Organism implements Entity{
         for (int i = 0; i < vecinos.size() && !found; i++){
             int[] v = vecinos.get(i);
             Entity e = habitat.get(v[0], v[1]);
-            found = (e != null && e != this && e.getClass() == getClass());
+            found = (e != null && e != this && e.getClass() == this.getClass()); //getClass Ia generativa
         }
         return found;
     }

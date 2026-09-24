@@ -84,20 +84,26 @@ public abstract class Animal extends Organism implements Entity{
     }
     
     /**
-     * Busca una casilla de tierra entre las vecinas.
+     * Busca una casilla de tierra entre las vecinas. Si hay varias,
+     * escoge una al azar.
      *
      * @param row la fila desde donde se mira
      * @param col la columna desde donde se mira
-     * @return la posición {fila, columna} de la primera tierra, o null si no hay
+     * @return la posición {fila, columna} de una tierra, o null si no hay
      */
     public int[] findLand(int row, int col){
         ArrayList<int[]> vecinos = neighborsNearby(row, col);
+        ArrayList<int[]> tierras = new ArrayList<int[]>();
         for (int[] v : vecinos){
             if (habitat.get(v[0], v[1]) instanceof Soil){
-                return v;
+                tierras.add(v);
             }
         }
-        return null;
+        if (tierras.isEmpty()){
+            return null;
+        }
+        int elegida = (int)(Math.random() * tierras.size());
+        return tierras.get(elegida);
     }
     
     /**

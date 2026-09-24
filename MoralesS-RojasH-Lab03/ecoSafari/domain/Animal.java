@@ -1,5 +1,5 @@
 package domain;
-
+import java.util.ArrayList;
 
 /**
  * Animal de la zona depredador-presa (cebra o león). Tiene energía,
@@ -8,7 +8,9 @@ package domain;
  * @author MoralesS-RojasH
  */
 public abstract class Animal extends Organism implements Entity{
-
+    
+    private EcoSafari habitat;
+    
     /**
      * Crea un animal y lo pone en el safari.
      *
@@ -69,9 +71,160 @@ public abstract class Animal extends Organism implements Entity{
      * @param col la columna desde donde se mira
      * @return la posición {fila, columna} de la primera comida, o null si no hay
      */
-    public Animal()
-    {
-
+    public int[] findFood(int row, int col){
+        ArrayList<int[]> vecinos = neighborsNearby(row, col);
+        for (int[] v : vecinos){
+            Entity e = habitat.get(v[0], v[1]);
+            if (e != null && isFood(e)){
+                return v;
+            }
+        }
+        return null;
     }
-
+    
+    /**
+     * Busca una casilla de tierra entre las vecinas.
+     *
+     * @param row la fila desde donde se mira
+     * @param col la columna desde donde se mira
+     * @return la posición {fila, columna} de la primera tierra, o null si no hay
+     */
+    public int[] findLand(int row, int col){
+        ArrayList<int[]> vecinos = neighborsNearby(row, col);
+        for (int[] v : vecinos){
+            if (habitat.get(v[0], v[1]) instanceof Tierra){
+                return v;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Baja la energía un 10%. Siempre baja al menos 1 punto mientras
+     * el animal tenga energía, para que termine muriendo.
+     */
+    public void loseEnergy(){
+        int before = getEnergy();
+        changeEnergy(-0.1f);
+        if (getEnergy() == before && before > 0){
+            changeEnergy(-1);
+        }
+    }
+    
+    /**
+     * Se come lo que hay en una casilla: la deja como tierra y
+     * el animal gana energía.
+     *
+     * @param row la fila de la comida
+     * @param col la columna de la comida
+     */
+    public void eat(int row, int col){
+        new Tierra(habitat, row, col);
+        changeEnergy(energyGain());
+    }
+    
+    /**
+     * Mueve al animal a una casilla de tierra. Intercambian posición:
+     * la tierra queda donde estaba el animal.
+     *
+     * @param row la fila destino
+     * @param col la columna destino
+     * @return true si se pudo mover, false si el destino no es tierra
+     */
+    public boolean moveTo(int row, int col){
+        int[] position = habitat.find(this);
+        Entity target = habitat.get(row, col);
+        boolean ok = false;
+        if (position != null && target instanceof Tierra){
+            habitat.set(target, position[0], position[1]);
+            habitat.set(this, row, col);
+            ok = true;
+        }
+        return ok;
+    }
+    
+    /**
+     * Quita al animal del safari y deja tierra en su lugar.
+     *
+     * @return true si estaba en el safari, false si no
+     */
+    public boolean disappear(){
+        int[] position = habitat.find(this);
+        boolean ok = false;
+        if (position != null){
+            new Tierra(habitat, position[0], position[1]);
+            ok = true;
+        }
+        return ok;
+    }
+    
+    /**
+     * Intenta reproducirse. Si hay una casilla de tierra vecina que también
+     * queda al lado de otro animal de la misma especie, ahí nace uno nuevo.
+     *
+     * @param row la fila del animal
+     * @param col la columna del animal
+     * @return true si nació un animal, false si no
+     */
+    public boolean reproduce(int row, int col){
+        boolean born = false;
+        ArrayList<int[]> vecinos = neighborsNearby(row, col);
+        for (int i = 0; i < vecinos.size() && !born; i++){
+            int[] v = vecinos.get(i);
+            if (habitat.get(v[0], v[1]) instanceof Tierra && hasMateNear(v[0], v[1])){
+                createOffspring(v[0], v[1]);
+                born = true;
+            }
+        }
+        return born;
+    }
+    
+    /**
+     * Dice si al lado de una casilla hay otro animal de la misma especie.
+     *
+     * @param row la fila de la casilla
+     * @param col la columna de la casilla
+     * @return true si hay otro animal de la misma especie, false si no
+     */
+    private boolean hasMateNear(int row, int col){
+        boolean found = false;
+        ArrayList<int[]> vecinos = neighborsNearby(row, col);
+        for (int i = 0; i < vecinos.size() && !found; i++){
+            int[] v = vecinos.get(i);
+            Entity e = habitat.get(v[0], v[1]);
+            found = (e != null && e != this && e.getClass() == getClass());
+        }
+        return found;
+    }
+    
+    /**
+     * Dice si una entidad es comida para este animal.
+     *
+     * @param e la entidad a revisar
+     * @return true si es comida, false si no
+     */
+    public abstract boolean isFood(Entity e);
+    
+    /**
+     * Dice cuántas casillas avanza el animal en un turno.
+     *
+     * @return el número de casillas
+     */
+    public abstract int speed();
+    
+    /**
+     * Dice cuánta energía gana el animal al comer, como porcentaje decimal.
+     *
+     * @return el porcentaje (por ejemplo 0.25f)
+     */
+    public abstract float energyGain();
+    
+    /**
+     * Crea un animal nuevo de la misma especie en una posición.
+     *
+     * @param row la fila donde nace
+     * @param col la columna donde nace
+     */
+    public abstract void createOffspring(int row, int col);
+    
 }

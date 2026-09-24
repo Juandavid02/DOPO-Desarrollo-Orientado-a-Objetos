@@ -113,7 +113,7 @@ public class EcoSafariTest
     @Test
     public void shouldMaintainTheEnergyAndTheEnergySourcesAreIndependent(){
         SickElephant rayo = new SickElephant(safari, 15, 24);
-        SickElephant casco = new SickElephant(safari, 3, 4);
+        SickElephant casco = new SickElephant(safari, 6, 4);
         safari.ticTac();
         assertEquals(100, rayo.getEnergy());
         assertTrue(safari.get(15, 24) instanceof SickElephant);

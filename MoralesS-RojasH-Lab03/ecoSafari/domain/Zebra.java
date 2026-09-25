@@ -7,7 +7,6 @@ import java.awt.Color;
  * si queda a una casilla de tierra de otra cebra.
  */
 public class Zebra extends Animal{
-    private boolean hasActed;
     
     /**
      * Crea una cebra y la pone en el safari.
@@ -18,49 +17,6 @@ public class Zebra extends Animal{
      */
     public Zebra(EcoSafari habitat, int row, int col){
         super(habitat, row, col);
-        hasActed = false;
-    }
-    
-    /**
-     * Acción de la cebra en el tic: camina, come y se reproduce.
-     * Solo actúa una vez por tic-tac.
-     */
-    @Override
-    public void tic(){
-        if (hasActed || !isAlive()){
-            return;
-        }
-        hasActed = true;
-        int[] position = getHabitat().find(this);
-        if (position == null){
-            return;
-        }
-        for (int i = 0; i < speed(); i++){
-            int[] land = findLand(position[0], position[1]);
-            if (land == null){
-                break;
-            }
-            moveTo(land[0], land[1]);
-            position = land;
-            loseEnergy();
-            if (!isAlive()){
-                disappear();
-                return;
-            }
-        }
-        int[] food = findFood(position[0], position[1]);
-        if (food != null){
-            eat(food[0], food[1]);
-        }
-        reproduce(position[0], position[1]);
-    }
-    
-    /**
-     * Prepara a la cebra para actuar en el siguiente tic-tac.
-     */
-    @Override
-    public void tac(){
-        hasActed = false;
     }
     
     /**
@@ -93,7 +49,7 @@ public class Zebra extends Animal{
     public float energyGain(){
         return 0.25f;
     }
-    
+
     /**
      * Crea una cebra nueva. Nace con el turno ya gastado para que no
      * actúe en el mismo tic-tac en que nació.
@@ -104,7 +60,7 @@ public class Zebra extends Animal{
     @Override
     public void createOffspring(int row, int col){
         Zebra baby = new Zebra(getHabitat(), row, col);
-        baby.hasActed = true;
+        baby.acted = true;
     }
     
     @Override

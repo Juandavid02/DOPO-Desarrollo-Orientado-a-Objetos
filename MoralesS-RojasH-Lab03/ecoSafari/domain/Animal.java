@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class Animal extends Organism implements Entity{
     
     private EcoSafari habitat;
-    private boolean acted;
+    protected boolean acted;
     /**
      * Crea un animal y lo pone en el safari.
      *
@@ -199,7 +199,7 @@ public abstract class Animal extends Organism implements Entity{
         for (int i = 0; i < vecinos.size() && !found; i++){
             int[] v = vecinos.get(i);
             Entity e = habitat.get(v[0], v[1]);
-            found = (e != null && e != this && e.getClass() == this.getClass()); //getClass Ia generativa
+            found = (e != null && e != this && e.getClass() == this.getClass()); //getClass Ia generativa es un metodo de todos los objetos permite saber a qué clase pertenece un objeto.
         }
         return found;
     }

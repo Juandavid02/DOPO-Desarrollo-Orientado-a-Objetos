@@ -14,6 +14,9 @@ import domain.Entity;
 import domain.SaltLick;
 import domain.Grass;
 import domain.Soil;
+import domain.Lion;
+import domain.Zebra;
+
 import java.util.Random;
 
 public class EcoSafariTest
@@ -271,7 +274,213 @@ public class EcoSafariTest
         safari.ticTac();
         assertTrue(safari.get(20, 15) instanceof Grass);
     }
+    
+    //Pruebas de leon 
+    /**
+     * Prueba que el león reconozca una cebra como comida.
+     */
+    @Test
+    public void shouldRecognizeZebraAsFood()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        Zebra rayas = new Zebra(safari, 10, 11);
+        assertTrue(simba.isFood(rayas));
+    }
+    
+    /**
+     * Prueba que el león no reconozca al pasto como comida.
+     */
+    @Test
+    public void shouldNotRecognizeGrassAsFood()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        Grass pasto = new Grass(safari, 10, 11);
+        assertFalse(simba.isFood(pasto));
+    }
+    
+    /**
+     * Prueba que el león avance una sola casilla por turno.
+     */
+    @Test
+    public void shouldHaveSpeedOne()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        assertEquals(1, simba.speed());
+    }
+    
+    
+    /**
+     * Prueba que el león se mueva a la única tierra vecina disponible
+     * y pierda 10% de energía al hacerlo.
+     */
+    @Test
+    public void shouldMoveToOnlyLandAvailable()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        Soil unicaTierra = new Soil(safari, 10, 11);
+        // El resto de vecinas se llenan con algo que no es tierra
+        Grass g1 = new Grass(safari, 9, 9);
+        Grass g2 = new Grass(safari, 9, 10);
+        Grass g3 = new Grass(safari, 9, 11);
+        Grass g4 = new Grass(safari, 10, 9);
+        Grass g5 = new Grass(safari, 11, 9);
+        Grass g6 = new Grass(safari, 11, 10);
+        Grass g7 = new Grass(safari, 11, 11);
 
+        safari.ticTac();
+
+        assertTrue(safari.get(10, 11) instanceof Lion);
+        assertEquals(90, simba.getEnergy());
+    }
+
+    /**
+     * Prueba que el león no se mueva si no tiene ninguna tierra vecina.
+     */
+    @Test
+    public void shouldNotMoveWithoutLand()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        Grass g1 = new Grass(safari, 9, 9);
+        Grass g2 = new Grass(safari, 9, 10);
+        Grass g3 = new Grass(safari, 9, 11);
+        Grass g4 = new Grass(safari, 10, 9);
+        Grass g5 = new Grass(safari, 10, 11);
+        Grass g6 = new Grass(safari, 11, 9);
+        Grass g7 = new Grass(safari, 11, 10);
+        Grass g8 = new Grass(safari, 11, 11);
+
+        safari.ticTac();
+
+        assertTrue(safari.get(10, 10) instanceof Lion);
+        assertEquals(100, simba.getEnergy());
+    }
+    
+    /**
+     * Prueba que el león muera y deje tierra en su lugar cuando
+     * se queda sin energía.
+     */
+    @Test
+    public void shouldDieAndLeaveSoil()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        simba.changeEnergy(-100);
+        safari.ticTac();
+
+        assertFalse(simba.isAlive());
+        assertTrue(safari.get(10, 10) instanceof Soil);
+    }
+    
+    /**
+     * Prueba que dos leones se reproduzcan cuando queda una tierra
+     * a una casilla de distancia de cada uno.
+     */
+    @Test
+    public void shouldReproduceWhenLandBetweenTwoLions()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        Lion mufasa = new Lion(safari, 10, 12);
+        Soil tierraNacimiento = new Soil(safari, 10, 11);
+
+        simba.reproduce(10, 10);
+
+        assertTrue(safari.get(10, 11) instanceof Lion);
+    }
+    
+    //Pruebas de Zebra
+    /**
+     * Prueba que la cebra reconozca al pasto como comida.
+     */
+    @Test
+    public void shouldRecognizeGrassAsFood()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        Grass pasto = new Grass(safari, 10, 11);
+        assertTrue(rayas.isFood(pasto));
+    }
+    
+    /**
+     * Prueba que la cebra no reconozca a un león como comida.
+     */
+    @Test
+    public void shouldNotRecognizeLionAsFood()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        Lion simba = new Lion(safari, 10, 11);
+        assertFalse(rayas.isFood(simba));
+    }
+    
+    /**
+     * Prueba que la cebra avance dos casillas por turno.
+     */
+    @Test
+    public void shouldHaveSpeedTwo()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        assertEquals(2, rayas.speed());
+    }
+    
+    /**
+     * Prueba que la cebra gane 25% de energía al comer.
+     */
+    @Test
+    public void shouldGainTwentyFivePercentEnergy()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        assertEquals(0.25f, rayas.energyGain());
+    }    
+
+    /**
+     * Prueba que la cebra no se mueva si no tiene ninguna tierra vecina.
+     */
+    @Test
+    public void shouldNotMoveWithoutLandZebra()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        Grass g1 = new Grass(safari, 9, 9);
+        Grass g2 = new Grass(safari, 9, 10);
+        Grass g3 = new Grass(safari, 9, 11);
+        Grass g4 = new Grass(safari, 10, 9);
+        Grass g5 = new Grass(safari, 10, 11);
+        Grass g6 = new Grass(safari, 11, 9);
+        Grass g7 = new Grass(safari, 11, 10);
+        Grass g8 = new Grass(safari, 11, 11);
+    
+        safari.ticTac();
+    
+        assertTrue(safari.get(10, 10) instanceof Zebra);
+        assertEquals(100, rayas.getEnergy());
+    }
+    
+    /**
+     * Prueba que la cebra muera y deje tierra en su lugar cuando
+     * se queda sin energía.
+     */
+    @Test
+    public void shouldDieAndLeaveSoilZebra()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        rayas.changeEnergy(-100);
+        safari.ticTac();
+
+        assertFalse(rayas.isAlive());
+        assertTrue(safari.get(10, 10) instanceof Soil);
+    }
+    
+    /**
+     * Prueba que dos cebras se reproduzcan cuando queda una tierra
+     * a una casilla de distancia de cada una.
+     */
+    @Test
+    public void shouldReproduceWhenLandBetweenTwoZebras()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        Zebra tigresa = new Zebra(safari, 10, 12);
+        Soil tierraNacimiento = new Soil(safari, 10, 11);
+
+        rayas.reproduce(10, 10);
+
+        assertTrue(safari.get(10, 11) instanceof Zebra);
+    }
     
     /**
      * Tears down the test fixture.

@@ -31,13 +31,25 @@ public class Soil implements Entity{
     public void tic(){
         if (!hasActed){
             hasActed = true;
-            if (habitat.getRandom().nextDouble() < GRASS_PROBABILITY){
+            if (shouldGrowGrass()){
                 int[] position = habitat.find(this);
                 if (position != null){
                     new Grass(habitat, position[0], position[1]);
                 }
             }
         }
+    }
+ 
+    /**
+     * Decide si en este tic la tierra se convierte en pasto.
+     * Se deja como un método aparte (protegido, no final) para que las
+     * pruebas de unidad puedan sobrescribirlo con una subclase anónima y
+     * así probar los dos casos (crece / no crece pasto) sin depender del
+     * azar real ni de tocar el generador aleatorio de EcoSafari.
+     * @return true si debe crecer pasto en este tic
+     */
+    protected boolean shouldGrowGrass(){
+        return habitat.getRandom().nextDouble() < GRASS_PROBABILITY;
     }
 
     @Override

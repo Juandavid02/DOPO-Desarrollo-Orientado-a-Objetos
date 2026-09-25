@@ -58,6 +58,29 @@ public class EcoSafari{
     }
     
     /**
+     * Llena la sabana de leones, tierra, cebras y pasto
+     */
+    public void someZone(){
+        Grass pastoA = new Grass(this, 0, 2);
+        Grass pastoB = new Grass(this, 3, 5);
+        Grass pastoC = new Grass(this, 6, 1);
+        
+        Zebra cebra1 = new Zebra(this, 1, 1);
+        Zebra cebra2 = new Zebra(this, 4, 4);
+        
+        Lion leon1 = new Lion(this, 8, 8);
+        Lion leon2 = new Lion(this, 2, 7);
+        
+        for (int r = 0; r < getSize(); r++){
+            for (int c = 0; c < getSize(); c++){
+                if (get(r, c) == null){
+                    new Soil(this, r, c);
+                }
+            }
+        }
+    }
+    
+    /**
      * Devuelve el generador de números aleatorios utilizado por las entidades.
      * @return El generador de números aleatorios.
      */
@@ -73,14 +96,6 @@ public class EcoSafari{
     public void setRandom(Random random){
         this.random = random;
     }
-    
-    /**
-     * Llena la sabana de leonas, tierra, cebras y pasto
-     */
-    public void someZone(){
-        
-    }
-    
     
     /**
      * Devuelve el tamaño del safari (filas y columnas).

@@ -53,10 +53,11 @@ public class Elephant extends Organism implements Entity{
 
     /**
      * Turno del elefante. Si todavía no ha actuado, intenta moverse en diagonal
-     * y pierde 10 de energía. Si se queda sin energía, desaparece.
+     * hacia una casilla vacía y pierde 10 de energía. Si se queda sin energía,
+     * desaparece.
      */
     public void tic(){
-        if ((! hasActed) && (move(1, 1))) {
+        if ((! hasActed) && (moveIfEmpty(1, 1))) {
             changeEnergy(-10);
             if (getEnergy()==0){
                 disappear();

@@ -17,7 +17,7 @@ public class EcoSafariGUI extends JFrame{
    
     
     private EcoSafariGUI() {
-        theEcoSafari=new EcoSafari(true);
+        theEcoSafari=new EcoSafari();
         SIZE=theEcoSafari.getSize();
         prepareElements();
         prepareActions();
@@ -80,7 +80,11 @@ public class EcoSafariGUI extends JFrame{
                 for(int c=0;c<theEcoSafari.getSize();c++){
                     if (theEcoSafari.get(f,c)!=null){
                         Color entityColor = theEcoSafari.get(f,c).getColor();
-                        if (theEcoSafari.isAffected(f,c)){
+                        boolean esZonaTierra = (theEcoSafari.get(f,c) instanceof Soil)
+                            || (theEcoSafari.get(f,c) instanceof Grass)
+                            || (theEcoSafari.get(f,c) instanceof Zebra)
+                            || (theEcoSafari.get(f,c) instanceof Lion);
+                        if (theEcoSafari.isAffected(f,c) && !esZonaTierra){
                             entityColor = entityColor.darker();
                         }
                         g.setColor(entityColor);
@@ -104,5 +108,6 @@ public class EcoSafariGUI extends JFrame{
                 }
             }
         }
+        
     }
 }

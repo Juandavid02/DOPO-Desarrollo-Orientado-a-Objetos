@@ -17,17 +17,8 @@ import domain.Soil;
 import domain.Lion;
 import domain.Zebra;
 
-import java.util.Random;
-
 public class EcoSafariTest
 {
-    /** Generador aleatorio con una respuesta fija, de modo que las pruebas del suelo siempre den el mismo resultado */
-    private static class FixedRandom extends Random
-    {
-        private final double value;
-        FixedRandom(double value){ this.value = value; }
-        @Override public double nextDouble(){ return value; }
-    }
     private EcoSafari safari;
 
     @BeforeEach
@@ -231,8 +222,9 @@ public class EcoSafariTest
     @Test
     public void shouldGrowGrassWhenProbabilityAllows()
     {
-        safari.setRandom(new FixedRandom(0.05));
-        Soil soil = new Soil(safari, 20, 15);
+        Soil soil = new Soil(safari, 20, 15){
+            @Override protected boolean shouldGrowGrass(){ return true; }
+        };
         soil.tic();
         assertTrue(safari.get(20, 15) instanceof Grass);
     }
@@ -244,8 +236,9 @@ public class EcoSafariTest
     @Test
     public void shouldNotGrowGrassWhenProbabilityDoesNotAllow()
     {
-        safari.setRandom(new FixedRandom(0.5));
-        Soil soil = new Soil(safari, 20, 15);
+        Soil soil = new Soil(safari, 20, 15){
+            @Override protected boolean shouldGrowGrass(){ return false; }
+        };
         soil.tic();
         assertSame(soil, safari.get(20, 15));
     }
@@ -269,8 +262,9 @@ public class EcoSafariTest
     @Test
     public void shouldGrowGrassDuringTicTac()
     {
-        safari.setRandom(new FixedRandom(0.05));
-        Soil soil = new Soil(safari, 20, 15);
+        Soil soil = new Soil(safari, 20, 15){
+            @Override protected boolean shouldGrowGrass(){ return true; }
+        };
         safari.ticTac();
         assertTrue(safari.get(20, 15) instanceof Grass);
     }

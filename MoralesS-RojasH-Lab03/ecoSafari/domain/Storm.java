@@ -12,15 +12,21 @@ public class Storm implements Entity
 {
     private EcoSafari habitat;
     private boolean hasCenter;
+    private boolean actuo;
 
     public Storm(EcoSafari habitat, int row, int column)
     {
         this.habitat = habitat;
         habitat.set((Entity)this, row, column);
         hasCenter = false;
+        actuo = false;
     }
     
     public void tic(){
+        if (actuo){
+            return;
+        }
+    
         int[] posicion = habitat.find(this);
         int size = habitat.getSize();
         int fila = posicion[0];
@@ -42,6 +48,7 @@ public class Storm implements Entity
         }
     
         if (!libre){
+            actuo = true;
             return;
         }
     
@@ -62,6 +69,11 @@ public class Storm implements Entity
             }
         }
         hasCenter = true;
+        actuo = true;
+    }
+    
+    public void tac(){
+        actuo = false;
     }
     
     /**

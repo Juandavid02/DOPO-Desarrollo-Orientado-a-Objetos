@@ -21,7 +21,15 @@ public class EcoSafari{
         affected = new boolean[SIZE][SIZE];
         someEntities();
     }
-        
+    
+    public EcoSafari(boolean empty) {
+        cells = new Entity[SIZE][SIZE];
+        affected = new boolean[SIZE][SIZE];
+        if (!empty) {
+            someEntities();
+        }
+    }
+    
     /**
      * Llena el safari con todas las entidades de ejemplo (elefantes, arbustos,
      * tormentas, elefantes enfermos, saltlicks, cebras y leones). La zona de

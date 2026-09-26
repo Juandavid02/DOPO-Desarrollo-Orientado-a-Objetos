@@ -201,10 +201,10 @@ public class EcoSafariTest
     @Test
     public void shouldKeepElephantHealthyBetweenPairOfSaltLicks()
     {
-        Elephant babar   = new Elephant(safari, 16, 1);
-        Elephant control = new Elephant(safari, 15, 15);
-        SaltLick cesar     = new SaltLick(safari, 18, 2);
-        SaltLick juan = new SaltLick(safari, 20, 4);
+        Elephant babar   = new Elephant(safari, 12, 1);
+        Elephant control = new Elephant(safari, 11, 15);
+        SaltLick cesar     = new SaltLick(safari, 14, 2);
+        SaltLick juan = new SaltLick(safari, 16, 4);
         for (int i = 0; i < 4; i++){
             safari.ticTac();
         }

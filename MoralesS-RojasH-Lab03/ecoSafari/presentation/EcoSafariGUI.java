@@ -6,6 +6,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
+/**
+ * Ventana principal del EcoSafari.
+ * Muestra el tablero con las entidades (animales, plantas, etc.)
+ * y un botón para avanzar el tiempo (tic-tac).
+ *
+ * @author MoralesS-RojasH
+ */
 public class EcoSafariGUI extends JFrame{  
     public static final int SIDE=20;
 
@@ -15,7 +22,9 @@ public class EcoSafariGUI extends JFrame{
     private PhotoEcoSafari photo;
     private EcoSafari theEcoSafari;
    
-    
+    /**
+     * Crea la ventana y arma el EcoSafari que se va a mostrar.
+     */
     private EcoSafariGUI() {
         theEcoSafari=new EcoSafari();
         SIZE=theEcoSafari.getSize();
@@ -23,6 +32,9 @@ public class EcoSafariGUI extends JFrame{
         prepareActions();
     }
     
+    /**
+     * Arma los elementos visuales de la ventana (foto y botón).
+     */    
     private void prepareElements() {
         setTitle("EcoSafari");
         photo=new PhotoEcoSafari(this);
@@ -34,38 +46,66 @@ public class EcoSafariGUI extends JFrame{
         setResizable(false);
         photo.repaint();
     }
-
+    
+    /**
+     * Configura las acciones de la ventana, como cerrar y el botón de tic-tac.
+     */
     private void prepareActions(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);       
         ticTacButton.addActionListener(e-> ticTacButtonAction());
     }
-
+    
+    /**
+     * Avanza un tic-tac en el EcoSafari y actualiza el dibujo.
+     */
     private void ticTacButtonAction() {
         theEcoSafari.ticTac();
         photo.repaint();
     }
 
+    /**
+     * Devuelve el EcoSafari que está manejando esta ventana.
+     *
+     * @return el EcoSafari actual
+     */    
     public EcoSafari gettheEcoSafari(){
         return theEcoSafari;
     }
     
+    /**
+     * Punto de entrada del programa. Crea la ventana y la muestra.
+     *
+     * @param args argumentos de consola (no se usan)
+     */    
     public static void main(String[] args) {
         EcoSafariGUI cg=new EcoSafariGUI();
         cg.setVisible(true);
     }  
 
-
+    /**
+     * Panel donde se dibuja el tablero del EcoSafari con todas sus entidades.
+     */
     class PhotoEcoSafari extends JPanel{
         private EcoSafariGUI gui;
-    
+        
+        /**
+         * Crea el panel de dibujo asociado a la ventana principal.
+         *
+         * @param gui la ventana principal que contiene este panel
+         */    
         public PhotoEcoSafari(EcoSafariGUI gui) {
             this.gui=gui;
             setBackground(Color.white);
             setPreferredSize(new Dimension(gui.SIDE*gui.SIZE+10, gui.SIDE*gui.SIZE+10));         
         }
     
-        //Ayuda de IA generativa para suavizar el gris
+        //Ayuda de IA generativa para suavizar el gris y el metodo painComponent
         
+        /**
+         * Dibuja el tablero: la cuadrícula y cada entidad con su color y forma.
+         *
+         * @param g el contexto gráfico donde se dibuja
+         */        
         public void paintComponent(Graphics g){
             EcoSafari theEcoSafari=gui.gettheEcoSafari();
             super.paintComponent(g);

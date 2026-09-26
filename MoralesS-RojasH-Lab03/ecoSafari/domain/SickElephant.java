@@ -34,7 +34,7 @@ public class SickElephant extends Elephant
     public void tic() {
         if (!hasActed){
             if (countTicTac % 2 == 0) {
-                if (move(1, 1)){
+                if (moveIfEmpty(1, 1)){
                     changeEnergy(-20);
                     countTicTac++;
                     if (getEnergy()<=0){

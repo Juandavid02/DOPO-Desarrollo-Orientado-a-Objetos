@@ -17,18 +17,29 @@ import domain.Soil;
 import domain.Lion;
 import domain.Zebra;
 
+/**
+ * Pruebas unitarias del EcoSafari: elefantes, arbustos, tormentas,
+ * elefante enfermo, SaltLick, tierra/pasto, leones y cebras.
+ *
+ * @author MoralesS-RojasH
+ */
 public class EcoSafariTest
 {
     private EcoSafari safari;
-
+    
+    /**
+     * Crea un EcoSafari nuevo antes de cada prueba.
+     */
     @BeforeEach
-    public void setUp()
-    {
-        safari = new EcoSafari();
+    public void setUp(){
+        safari = new EcoSafari(true); 
     }
     
     //Pruenas de los elefantes
     
+    /**
+     * Prueba que el elefante cambie de posición al hacer ticTac.
+     */
     @Test
     public void testTicTacMuevePosicionDelElephant()
     {
@@ -40,7 +51,10 @@ public class EcoSafariTest
         assertEquals(6, posicion[0]); // fila
         assertEquals(6, posicion[1]); // columna
     }
-
+    
+    /**
+     * Prueba que el elefante pierda energía al hacer ticTac.
+     */
     @Test
     public void shouldLessEnergy()
     {
@@ -50,6 +64,9 @@ public class EcoSafariTest
     }
     
     //Pruenas de los arbusto
+    /**
+     * Prueba que el arbusto cambie de color con el paso del tiempo.
+     */
     @Test
     public void shouldChangeColor()
     {
@@ -62,6 +79,9 @@ public class EcoSafariTest
         assertEquals(Color.YELLOW, arbustin.getColor());
     }
     
+    /**
+     * Prueba que el arbusto desaparezca cuando hay un elefante cerca.
+     */
     @Test
     public void shouldDisappearWhenElephantIsNearby()
     {
@@ -71,6 +91,9 @@ public class EcoSafariTest
         assertNull(safari.find(arbustin));
     }
     
+    /**
+     * Prueba que el arbusto se reproduzca con el paso del tiempo.
+     */
     @Test
     public void shouldReproduce()
     {
@@ -83,6 +106,9 @@ public class EcoSafariTest
     }
     
     //Pruebas de la tormenta
+    /**
+     * Prueba que la tormenta se mueva hacia el noreste.
+     */
     @Test
     public void shouldMoveCenterNortheast()
     {
@@ -91,7 +117,10 @@ public class EcoSafariTest
         assertTrue(safari.get(0, 2)instanceof Storm);
         
     }
-
+    
+    /**
+     * Prueba que la tormenta sea de color negro.
+     */
     @Test
     public void shouldbeBlack(){
         Storm tormenta = new Storm(safari, 1, 1);
@@ -99,6 +128,10 @@ public class EcoSafariTest
     }
 
     //Pruebas del Elefante Enfermo 
+    
+    /**
+     * Prueba que el elefante enfermo se mueva lentamente (una casilla en dos ticTacs).
+     */
     @Test 
     public void shouldMoveSlowly(){
         SickElephant rayo = new SickElephant(safari, 2, 3);
@@ -107,15 +140,21 @@ public class EcoSafariTest
         assertTrue(safari.get(3, 4) instanceof SickElephant);
     }    
 
+    /**
+     * Prueba que el elefante enfermo pierda energía más rápido que uno sano.
+     */
     @Test
     public void shouldLoseHealthFaster(){
         SickElephant rayo = new SickElephant(safari, 2, 3);
-        Elephant dumbo = new Elephant(safari, 5, 5);
+        Elephant dumbo = new Elephant(safari, 4, 6);
         safari.ticTac();
         assertEquals(80, rayo.getEnergy());
         assertTrue(rayo.getEnergy() < dumbo.getEnergy()); 
     }
     
+    /**
+     * Prueba que cada elefante enfermo mantenga su propia energía de forma independiente.
+     */
     @Test
     public void shouldMaintainTheEnergyAndTheEnergySourcesAreIndependent(){
         SickElephant rayo = new SickElephant(safari, 15, 24);
@@ -474,6 +513,85 @@ public class EcoSafariTest
         rayas.reproduce(10, 10);
 
         assertTrue(safari.get(10, 11) instanceof Zebra);
+    }
+    
+    
+    //Prueba de Leon
+    
+    /**
+     * Prueba que un león recién nacido no actúe (no se mueva ni pierda
+     * energía) en el mismo ticTac en que nace.
+     */
+    @Test
+    public void shouldNotActOnBirthTicTac()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        Lion mufasa = new Lion(safari, 10, 12);
+        Soil tierraNacimiento = new Soil(safari, 10, 11);
+    
+        simba.reproduce(10, 10);
+        Lion baby = (Lion) safari.get(10, 11);
+    
+        safari.ticTac();
+    
+        assertTrue(safari.get(10, 11) instanceof Lion);
+        assertEquals(100, baby.getEnergy());
+    }
+    
+    /**
+     * Prueba que el león gane 50% de energía al comer una cebra
+     * y que la cebra sea reemplazada por tierra.
+     */
+    @Test
+    public void shouldGainFiftyPercentEnergyWhenEatingZebra()
+    {
+        Lion simba = new Lion(safari, 10, 10);
+        simba.changeEnergy(-50); // energía en 50
+        Zebra rayas = new Zebra(safari, 10, 11);
+    
+        simba.eat(10, 11);
+    
+        assertEquals(75, simba.getEnergy());
+        assertTrue(safari.get(10, 11) instanceof Soil);
+    }
+    
+    //Prueba de Zebra
+
+    /**
+     * Prueba que una cebra recién nacida no actúe (no se mueva ni pierda
+     * energía) en el mismo ticTac en que nace.
+     */
+    @Test
+    public void shouldNotActOnBirthTicTacZebra()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        Zebra tigresa = new Zebra(safari, 10, 12);
+        Soil tierraNacimiento = new Soil(safari, 10, 11);
+    
+        rayas.reproduce(10, 10);
+        Zebra baby = (Zebra) safari.get(10, 11);
+    
+        safari.ticTac();
+    
+        assertTrue(safari.get(10, 11) instanceof Zebra);
+        assertEquals(100, baby.getEnergy());
+    }
+    
+    /**
+     * Prueba que la cebra gane 25% de energía al comer pasto
+     * y que el pasto sea reemplazado por tierra.
+     */
+    @Test
+    public void shouldGainTwentyFivePercentEnergyWhenEatingGrass()
+    {
+        Zebra rayas = new Zebra(safari, 10, 10);
+        rayas.changeEnergy(-50); // energía en 50
+        Grass pasto = new Grass(safari, 10, 11);
+    
+        rayas.eat(10, 11);
+    
+        assertEquals(63, rayas.getEnergy());
+        assertTrue(safari.get(10, 11) instanceof Soil);
     }
     
     /**

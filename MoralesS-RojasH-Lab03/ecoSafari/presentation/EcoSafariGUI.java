@@ -76,9 +76,10 @@ public class EcoSafariGUI extends JFrame{
             for (int f=0;f<=theEcoSafari.getSize();f++){
                 g.drawLine(0,f*gui.SIDE,theEcoSafari.getSize()*gui.SIDE,f*gui.SIDE);
             }       
-            for (int f=0;f<theEcoSafari.getSize();f++){
-                for(int c=0;c<theEcoSafari.getSize();c++){
-                    if (theEcoSafari.get(f,c)!=null){
+            for (int f=0; f<theEcoSafari.getSize(); f++){
+                for (int c=0; c<theEcoSafari.getSize(); c++){
+            
+                    if (theEcoSafari.get(f,c) != null){
                         Color entityColor = theEcoSafari.get(f,c).getColor();
                         boolean esZonaTierra = (theEcoSafari.get(f,c) instanceof Soil)
                             || (theEcoSafari.get(f,c) instanceof Grass)
@@ -88,22 +89,22 @@ public class EcoSafariGUI extends JFrame{
                             entityColor = entityColor.darker();
                         }
                         g.setColor(entityColor);
-                        if (theEcoSafari.get(f,c).shape()==Entity.SQUARE){                  
-                            g.fillRoundRect(gui.SIDE*c+1,gui.SIDE*f+1,gui.SIDE-2,gui.SIDE-2,2,2);   
-                        }else {
-                            g.fillOval(gui.SIDE*c+1,gui.SIDE*f+1,gui.SIDE-2,gui.SIDE-2);
+                        if (theEcoSafari.get(f,c).shape()==Entity.SQUARE){
+                            g.fillRoundRect(gui.SIDE*c+1, gui.SIDE*f+1, gui.SIDE-2, gui.SIDE-2, 2, 2);
+                        } else {
+                            g.fillOval(gui.SIDE*c+1, gui.SIDE*f+1, gui.SIDE-2, gui.SIDE-2);
                         }
                         if (theEcoSafari.get(f,c).isOrganism()){
                             g.setColor(Color.red);
                             if (((Organism)theEcoSafari.get(f,c)).getEnergy()>=50){
-                                g.drawString("+",gui.SIDE*c+6,gui.SIDE*f+15);
+                                g.drawString("+", gui.SIDE*c+6, gui.SIDE*f+15);
                             } else {
-                                g.drawString("~",gui.SIDE*c+6,gui.SIDE*f+17);
+                                g.drawString("~", gui.SIDE*c+6, gui.SIDE*f+17);
                             }
-                        }    
+                        }
                     } else if (theEcoSafari.isAffected(f,c)){
                         g.setColor(Color.GRAY);
-                        g.fillRect(gui.SIDE*c+1,gui.SIDE*f+1,gui.SIDE-2,gui.SIDE-2);
+                        g.fillRect(gui.SIDE*c+1, gui.SIDE*f+1, gui.SIDE-2, gui.SIDE-2);
                     }
                 }
             }

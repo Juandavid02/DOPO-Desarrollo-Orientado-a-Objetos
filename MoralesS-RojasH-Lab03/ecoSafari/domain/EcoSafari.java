@@ -21,26 +21,12 @@ public class EcoSafari{
         affected = new boolean[SIZE][SIZE];
         someEntities();
     }
-    
+        
     /**
-     * Crea un safari nuevo. Si zone es true pone la zona de cebras y leones,
-     * si no pone las entidades de siempre.
-     *
-     * @param zone true para la zona, false para las entidades de siempre
-     */
-    public EcoSafari(boolean zone) {
-        cells=new Entity[SIZE][SIZE];
-        affected = new boolean[SIZE][SIZE];
-        if (zone){
-            someZone();
-        } else {
-            someEntities();
-        }
-    }
-    
-    /**
-     * Llena el safari con algunas entidades de ejemplo
-     * (elefantes, arbustos, tormentas y elefantes enfermos).
+     * Llena el safari con todas las entidades de ejemplo (elefantes, arbustos,
+     * tormentas, elefantes enfermos, saltlicks, cebras y leones). La zona de
+     * tierra (pasto, cebras, leones) solo ocupa una región de la cuadrícula,
+     * dejando el resto vacío para que elefantes y tormentas se puedan mover.
      */
     public void someEntities(){
         Elephant dumbo = new Elephant(this, 3, 5);
@@ -55,23 +41,21 @@ public class EcoSafari{
         SickElephant casco = new SickElephant(this, 6, 4);
         SaltLick cesarS = new SaltLick(this, 12, 11);
         SaltLick juanS = new SaltLick(this, 14, 13);
-    }
     
-    /**
-     * Llena la sabana de leones, tierra, cebras y pasto
-     */
-    public void someZone(){
-        Grass pastoA = new Grass(this, 0, 2);
-        Grass pastoB = new Grass(this, 3, 5);
-        Grass pastoC = new Grass(this, 6, 1);
-        
-        Zebra cebra1 = new Zebra(this, 1, 1);
-        Zebra cebra2 = new Zebra(this, 4, 4);
-        
-        Lion leon1 = new Lion(this, 8, 8);
-        Lion leon2 = new Lion(this, 2, 7);
-        
-        for (int r = 0; r < getSize(); r++){
+        // Zona de tierra: filas 18 a 24 (las últimas 7 filas de la cuadrícula)
+        int zonaTierraDesde = 18;
+    
+        Grass pastoA = new Grass(this, 18, 2);
+        Grass pastoB = new Grass(this, 20, 6);
+        Grass pastoC = new Grass(this, 22, 1);
+    
+        Zebra cebra1 = new Zebra(this, 19, 1);
+        Zebra cebra2 = new Zebra(this, 21, 4);
+    
+        Lion leon1 = new Lion(this, 23, 8);
+        Lion leon2 = new Lion(this, 20, 12);
+    
+        for (int r = zonaTierraDesde; r < getSize(); r++){
             for (int c = 0; c < getSize(); c++){
                 if (get(r, c) == null){
                     new Soil(this, r, c);
